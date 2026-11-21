@@ -37,6 +37,12 @@ def index():
     return render_template("index.html")
 
 
+@app.route("/static/<path:filename>")
+def custom_static(filename):
+    """Explicit fallback for static assets in cloud serverless deployments."""
+    return send_from_directory(os.path.join(BASE_DIR, "static"), filename)
+
+
 @app.route("/favicon.ico")
 def favicon():
     """Serves the SVG favicon for browsers requesting standard favicon.ico."""
