@@ -8,13 +8,32 @@ import sqlite3
 import os
 from datetime import date, datetime, timedelta
 
-# Database path in the project root
+# Database path in the project root (or /tmp for serverless cloud environments)
 DB_DIR = os.path.dirname(os.path.abspath(__file__))
-DB_PATH = os.path.join(DB_DIR, "cashpilot.db")
+
+def resolve_db_path():
+    """
+    Resolves the writable database path.
+    In serverless hosting (Netlify Functions, Vercel, AWS Lambda),
+    the source code directory is read-only, so SQLite falls back to /tmp.
+    """
+    try:
+        test_file = os.path.join(DB_DIR, ".test_write")
+        with open(test_file, "w") as f:
+            f.write("1")
+        os.remove(test_file)
+        return os.path.join(DB_DIR, "cashpilot.db")
+    except (OSError, PermissionError):
+        tmp_dir = "/tmp" if os.name != "nt" else os.environ.get("TEMP", "C:\\temp")
+        return os.path.join(tmp_dir, "cashpilot.db")
+
+DB_PATH = resolve_db_path()
 
 
 def get_db_connection():
     """Returns a SQLite connection with row factory enabled for dict-like row access."""
+    if not os.path.exists(DB_PATH):
+        init_db()
     conn = sqlite3.connect(DB_PATH)
     conn.row_factory = sqlite3.Row
     conn.execute("PRAGMA foreign_keys = ON")
@@ -23,7 +42,9 @@ def get_db_connection():
 
 def init_db():
     """Initializes the SQLite database tables if they do not exist."""
-    conn = get_db_connection()
+    conn = sqlite3.connect(DB_PATH)
+    conn.row_factory = sqlite3.Row
+    conn.execute("PRAGMA foreign_keys = ON")
     cursor = conn.cursor()
 
     # 1. Settings Table: Business & Cash Flow defaults

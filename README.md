@@ -194,6 +194,37 @@ OK
 
 ---
 
+## 🌐 Free Cloud Hosting & Deployment Guide
+
+CashPilot is pre-configured with zero-configuration files for the most popular free cloud hosting platforms:
+
+### Option 1: Deploy on Netlify (Free)
+1. Go to **[Netlify](https://app.netlify.com)** and sign in with GitHub.
+2. Click **"Add new site"** &rarr; **"Import an existing project"**.
+3. Choose **GitHub** and select your repository: `Shruthi567-collab/cashpilot`.
+4. Netlify will automatically detect [`netlify.toml`](file:///C:/Users/Admin/.gemini/antigravity/scratch/cashpilot/netlify.toml).
+5. Click **"Deploy site"** — Netlify installs dependencies and deploys the Flask app via Netlify Functions!
+
+---
+
+### Option 2: Deploy on Vercel (Recommended — Instant 30s Deploy)
+1. Go to **[Vercel](https://vercel.com)** and sign in with GitHub.
+2. Click **"Add New..."** &rarr; **"Project"**.
+3. Import **`Shruthi567-collab/cashpilot`**.
+4. Vercel automatically detects [`vercel.json`](file:///C:/Users/Admin/.gemini/antigravity/scratch/cashpilot/vercel.json) and [`api/index.py`](file:///C:/Users/Admin/.gemini/antigravity/scratch/cashpilot/api/index.py).
+5. Click **"Deploy"** — your live app will be accessible at `https://cashpilot-xxx.vercel.app` with instant global SSL!
+
+---
+
+### Option 3: Deploy on Render (Free Persistent Web Service)
+1. Go to **[Render](https://render.com)** and sign in with GitHub.
+2. Click **"New +"** &rarr; **"Web Service"**.
+3. Select your GitHub repository: `Shruthi567-collab/cashpilot`.
+4. Choose **Environment: Python 3**, Build Command: `pip install -r requirements.txt`, Start Command: `gunicorn app:app`.
+5. Select the **Free** instance type and click **"Create Web Service"**.
+
+---
+
 ## 💡 Hackathon Evaluation Highlights
 1. **Target-User Fit**: Built strictly around the mental model of a home tutor (students, parents, hourly/monthly fees, gentle communication).
 2. **Zero Incomplete Buttons**: Every single button (Mark Paid, Remind, History, Edit, Delete, Simulate, Print) is wired end-to-end to SQLite and reactive UI updates.
