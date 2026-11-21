@@ -12,8 +12,13 @@ from flask import Flask, render_template, request, jsonify, send_from_directory
 from database import init_db, get_db_connection, sync_invoice_statuses, seed_sample_data
 from forecast import calculate_cash_forecast, simulate_whatif_scenario, generate_smart_alerts
 
-# Initialize Flask application
-app = Flask(__name__, static_folder="static", template_folder="templates")
+# Initialize Flask application with absolute paths for Vercel/cloud serverless environments
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+app = Flask(
+    __name__,
+    static_folder=os.path.join(BASE_DIR, "static"),
+    template_folder=os.path.join(BASE_DIR, "templates")
+)
 app.config["SECRET_KEY"] = "cashpilot-hackathon-2026-secret-key"
 
 # Ensure database and sample data are ready at startup
@@ -30,6 +35,16 @@ def index():
     # Sync statuses so any invoice past its due date becomes 'Overdue'
     sync_invoice_statuses()
     return render_template("index.html")
+
+
+@app.route("/favicon.ico")
+def favicon():
+    """Serves the SVG favicon for browsers requesting standard favicon.ico."""
+    return send_from_directory(
+        os.path.join(BASE_DIR, "static"),
+        "favicon.svg",
+        mimetype="image/svg+xml"
+    )
 
 
 # -----------------------------------------------------------------------------
